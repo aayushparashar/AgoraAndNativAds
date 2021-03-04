@@ -1,4 +1,10 @@
+import 'package:appyHigh/utils/AppID.dart';
+import 'package:appyHigh/pages/waitingScreen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_admob/flutter_native_admob.dart';
+import 'package:flutter_native_admob/native_admob_controller.dart';
+import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 
@@ -10,16 +16,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _nativeAdController = NativeAdmobController();
   final myController = TextEditingController();
   bool _validateError = false;
+
+  @override
+  void initState() {
+//    _nativeAdmob = NativeAdmob(adUnitID: adUnitId);
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text('Agora Group Video Calling'),
-        elevation: 0,
+        title: Text('Apply High'),
       ),
       body: SafeArea(
         child: Center(
@@ -30,63 +42,52 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image(
-                  image: NetworkImage(
-                      'https://www.agora.io/en/wp-content/uploads/2019/07/agora-symbol-vertical.png'),
-                  height: MediaQuery.of(context).size.height * 0.17,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Image(
+                    image: AssetImage('assets/appyHigh.png'),
+                    height: MediaQuery.of(context).size.height * 0.17,
+                  ),
                 ),
                 Padding(padding: EdgeInsets.only(top: 20)),
-                Text(
-                  'Agora Group Video Call Demo',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-                Padding(padding: EdgeInsets.symmetric(vertical: 20)),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: TextFormField(
-                    controller: myController,
-                    decoration: InputDecoration(
-                      labelText: 'Channel Name',
-                      labelStyle: TextStyle(color: Colors.blue),
-                      hintText: 'test',
-                      hintStyle: TextStyle(color: Colors.black45),
-                      errorText:
-                          _validateError ? 'Channel name is mandatory' : null,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      disabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                SizedBox(
+                  child: NativeAdmob(
+                    adUnitID: adUnitId,
+                    loading: Center(child: CircularProgressIndicator()),
+                    error: Text("Failed to load the ad"),
+                    type: NativeAdmobType.full,
+                    controller: _nativeAdController,
+                    numberAds: 3,
+                    options: NativeAdmobOptions(
+                      ratingColor: Colors.red,
+
+                      // Others ...
                     ),
                   ),
+                  height: 200,
+                  width: 200,
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 30)),
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.25,
+                  width: MediaQuery.of(context).size.width * 0.5,
                   child: MaterialButton(
+                    elevation: 5,
+                    shape: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(10)),
                     onPressed: onJoin,
-                    height: 40,
-                    color: Colors.blueAccent,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+//                    height: 40,
+                    color: Colors.redAccent,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Join',
-                          style: TextStyle(color: Colors.white),
+                          'Get Started',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
                         ),
                         Icon(
                           Icons.arrow_forward,
@@ -95,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -105,20 +106,16 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> onJoin() async {
-    setState(() {
-      myController.text.isEmpty
-          ? _validateError = true
-          : _validateError = false;
-    });
 
-    await _handleCameraAndMic(Permission.camera);
-    await _handleCameraAndMic(Permission.microphone);
+//    await _handleCameraAndMic(Permission.camera);
+//    await _handleCameraAndMic(Permission.microphone);
 
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CallPage(channelName: myController.text),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => waitingScreen()//CallPage(channelName: 'randomVideoCall'),
+      ),
+    );
   }
 
   Future<void> _handleCameraAndMic(Permission permission) async {

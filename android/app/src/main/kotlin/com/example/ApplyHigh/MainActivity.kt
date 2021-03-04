@@ -1,4 +1,4 @@
-package com.example.agora_video_call
+package com.example.ApplyHigh
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

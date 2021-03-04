@@ -1,1 +1,3 @@
-var appID = 'd52dfd15531f4f57bbe4a0d06bed92bc';
+var appID = '2999f64e77c54e72896f671542766593';
+//var adUnitId = 'ca-app-pub-4201129557983723/9789269038';
+var adUnitId = 'ca-app-pub-3940256099942544/8135179316';
